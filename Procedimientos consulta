@@ -1,0 +1,67 @@
+
+
+
+
+-- Validador
+create procedure sp_validador
+@cliente nvarchar(50)
+as
+begin
+select idCliente,nombre, sexo,segmento,cuenta,
+concat (substring(apellidoPaterno,0,4),'***'), 
+concat (substring(apellidoMaterno,0,4),'***'),
+concat (substring((format(fechaNacimiento,'yyyy')),0,4),'***'),
+concat (substring(nacionalidad,0,4),'***'),
+concat (substring(rfc,0,4),'***'),
+concat (substring(tipoID,0,4),'***'),
+concat (substring(numeroID,0,4),'***'),
+concat (substring(cuenta,0,4),'***'),
+concat (substring(email,0,4),'***'),
+(
+SELECT   ((CASE WHEN idCliente  IS NULL THEN 1 ELSE 0 END)  + (CASE WHEN nombre  IS NULL THEN 1 ELSE 0 END)  + (CASE WHEN apellidoPaterno IS NULL THEN 1 ELSE 0 END)  +(CASE WHEN apellidoMaterno IS NULL THEN 1 ELSE 0 END)  +(CASE WHEN fechaNacimiento IS NULL THEN 1 ELSE 0 END)  +(CASE WHEN sexo IS NULL THEN 1 ELSE 0 END)  +(CASE WHEN nacionalidad IS NULL THEN 1 ELSE 0 END)  +(CASE WHEN rfc IS NULL THEN 1 ELSE 0 END)  + (CASE WHEN tipoID IS NULL THEN 1 ELSE 0 END)  + (CASE WHEN numeroID IS NULL THEN 1 ELSE 0 END)  + (CASE WHEN cuenta IS NULL THEN 1 ELSE 0 END)  + (CASE WHEN email IS NULL THEN 1 ELSE 0 END)) AS nulosFROM baseClientesHackaton2022where idCliente =@cliente
+) as 'campos vacios'
+from baseClientesHackaton2022
+where idCliente =@cliente
+end
+go
+
+
+
+
+
+
+ --manager 
+ create procedure sp_manager
+@cliente nvarchar(50)
+as
+begin
+select * from baseClientesHackaton2022
+where idCliente = @cliente
+end 
+go
+
+
+--restringido
+ create procedure sp_restringido
+@cliente nvarchar(50)
+as
+begin
+select idCliente,nombre, sexo,segmento,cuenta
+from baseClientesHackaton2022
+where idCliente =@cliente
+end 
+go
+
+--login 
+create procedure sp_login
+@usr as nvarchar(30),
+@psw as nvarchar(30)
+as 
+begin
+select perfil from baseUsuarios
+where usuario = @usr and auth =@psw
+end 
+go
+
+exec sp_login @usr = 'EduardoE',@psw = 'ABC123'
+
